@@ -2,7 +2,7 @@
 """
 PreForM.py, Preprocessor for Fortran poor Men
 """
-from __future__ import print_function
+
 import ast
 try:
   from datetime import datetime
@@ -41,7 +41,7 @@ __regex_cpp_define__ = re.compile(r"(?P<cpp_define>^(|\s*)#[Dd][Ee][Ff][Ii][Nn][
 __regex_cpp_undef__ = re.compile(r"(?P<cpp_undef>^(|\s*)#[Uu][Nn][Dd][Ee][Ff])\s+"+__macro__)
 __regex_cpp_include__ = re.compile(r"(?P<cpp_include>^(|\s*)#[Ii][Nn][Cc][Ll][Uu][Dd][Ee])\s+"+r"(?P<fname>.*)")
 __regexs_cpp__ = {}
-for k, v in locals().items():
+for k, v in list(locals().items()):
   if not re.match(r"^__regex_cpp_cond_.*__", k) and re.match(r"^__regex_cpp_.*__", k):
     __regexs_cpp__[k] = v
 # cpp conditional directives
@@ -54,7 +54,7 @@ __regex_cpp_cond_endif__ = re.compile(r"(?P<cpp_endif>^(|\s*)#[Ee][Nn][Dd][Ii][F
 __regex_cpp_cond_defined__ = re.compile(r"(?P<cpp_defined>[Dd][Ee][Ff][Ii][Nn][Ee][Dd])"+r"(\s+|\()"+__macro__+r"(|\))")
 __regex_cpp_cond_defined_kwd__ = re.compile(r"(?P<cpp_defined>[Dd][Ee][Ff][Ii][Nn][Ee][Dd])")
 __regexs_cpp_cond__ = {}
-for k, v in locals().items():
+for k, v in list(locals().items()):
   if re.match(r"^__regex_cpp_cond_.*__", k):
     __regexs_cpp_cond__[k] = v
 # pre-defined macros
@@ -121,7 +121,7 @@ class Macros(object):
     Method for checking if a macro is presently defined.
     """
     result = False
-    for key, val in self.dic.items():
+    for key, val in list(self.dic.items()):
       if macro == key:
         if val is not None:
           result = True
@@ -133,7 +133,7 @@ class Macros(object):
     Method for checking if a macro is not presently defined.
     """
     result = True
-    for key, val in self.dic.items():
+    for key, val in list(self.dic.items()):
       if macro == key:
         if val is not None:
           result = False
@@ -144,7 +144,7 @@ class Macros(object):
     """
     Method for expandind defined macros present into the expression.
     """
-    for mkey, mval in self.dic.items():
+    for mkey, mval in list(self.dic.items()):
       if mval is not None:
         if '(' in mkey or ')' in mkey:
           # function-like macro
@@ -218,11 +218,11 @@ class Macros(object):
     Method for printing the list of macros.
     """
     print('Defined macros')
-    for key, val in self.dic.items():
+    for key, val in list(self.dic.items()):
       if val is not None:
         print(key+': '+str(val))
     print('Undefined macros')
-    for key, val in self.dic.items():
+    for key, val in list(self.dic.items()):
       if val is None:
         print(key)
     return
@@ -270,7 +270,7 @@ class ParsedLine(object):
     Check if line contains preprocessing directives.
     """
     # cpp directives
-    for key, val in __regexs_cpp__.items():
+    for key, val in list(__regexs_cpp__.items()):
       matching = re.search(val, self.line)
       if matching:
         state.action = 'omit'
@@ -296,7 +296,7 @@ class ParsedLine(object):
         return
 
     # cpp conditional directives
-    for key, val in __regexs_cpp_cond__.items():
+    for key, val in list(__regexs_cpp_cond__.items()):
       matching = re.search(val, self.line)
       if matching:
         if key == '__regex_cpp_cond_if__' or key == '__regex_cpp_cond_elif__':
