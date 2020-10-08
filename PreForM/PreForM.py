@@ -154,7 +154,7 @@ class Macros(object):
             vnames = matching.group('expr').split(',')  # variables names
             if fname in expression:
               for matching in re.finditer(__regex_function__, expression):
-                if matching:
+                if matching and matching.group('name') == fname:
                   expr = mval
                   if vnames[0] == '...':
                     # variadic macro
